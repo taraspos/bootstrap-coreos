@@ -43,7 +43,7 @@ function check_CLIENT_ID {
 #   fi
 # }
 
-function run_cloud_init {
+function get_cloud_init {
   CLOUD_INIT_URL=https://s3-us-west-2.amazonaws.com/cloud-config-test-bucket/cloud-config-$CLIENT_ID
   wget $CLOUD_INIT_URL -O ~/cloud-config
 }
@@ -55,5 +55,5 @@ function  install_coreos {
 check_if_root
 check_CLIENT_ID $1
 #check_cloud_init_path
-run_cloud_init
+get_cloud_init
 install_coreos
