@@ -43,6 +43,7 @@ function check_CLIENT_ID {
 #   fi
 # }
 
+
 function get_cloud_init {
   CLOUD_INIT_URL=https://s3-us-west-2.amazonaws.com/cloud-config-test-bucket/cloud-config-$CLIENT_ID
   wget $CLOUD_INIT_URL -O ~/cloud-config
@@ -52,8 +53,19 @@ function  install_coreos {
   coreos-install -d /dev/sda -C stable -c ~/cloud-config
 }
 
+function download_containers {
+  mkdir /mnt/rootfs
+  mount /dev/sda9 /mnt/rootfs
+  systemctl stop docker.service
+  rm -rf /var/lib/docker
+  ln -s /mnt/rootfs/var/lib/docker /var/lib/docker
+  systemctl start docker.service
+  coreos-cloudinit --from-file ~/cloud-config
+}
+
 check_if_root
 check_CLIENT_ID $1
 #check_cloud_init_path
 get_cloud_init
 install_coreos
+download_containers
