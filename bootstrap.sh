@@ -1,5 +1,9 @@
 #!/bin/bash
 
+DOCKER_DATA_DIR=/var/lib/docker
+MOUNT_DIR=/mnt/rootfs
+CORE_OS_PARTITION=/dev/sda9
+
 function check_if_root {
   if [[ $EUID -ne 0 ]]; then
      echo "This script must be run as root" 1>&2
@@ -19,7 +23,7 @@ function check_CLIENT_ID {
       if [ "$#" -eq "1" ]; then
         echo "Provided CLIENT_ID value: $CLIENT_ID"
       elif [ $# -eq 0 ]; then
-        echo "No arguments provided"vi
+        echo "No arguments provided"
         read_CLIENT_ID_from_input
       else
         echo "Illegal number of parameters"
@@ -47,19 +51,33 @@ function check_CLIENT_ID {
 function get_cloud_init {
   CLOUD_INIT_URL=https://s3-us-west-2.amazonaws.com/cloud-config-test-bucket/cloud-config-$CLIENT_ID
   wget $CLOUD_INIT_URL -O ~/cloud-config
+  #### Setting hostname "core-$CLIENT-ID"
+  sed -i "s/client_id/core-$CLIENT_ID/" ~/cloud-config
 }
 
 function  install_coreos {
   coreos-install -d /dev/sda -C stable -c ~/cloud-config
 }
 
-function download_containers {
-  mkdir /mnt/rootfs
-  mount /dev/sda9 /mnt/rootfs
+function mount_root_disk {
+  mkdir -p $MOUNT_DIR
+  IS_MOUNT=`df -h | grep "/dev/sda9 .* $MOUNT_DIR"`
+  if [[ ! $IS_MOUNT ]]; then
+    echo "Mounting CoreOS root partition to the $MOUNT_DIR"
+    mount $CORE_OS_PARTITION $MOUNT_DIR
+  fi
   systemctl stop docker.service
-  rm -rf /var/lib/docker
-  ln -s /mnt/rootfs/var/lib/docker /var/lib/docker
+  if [ ! -L $DOCKER_DATA_DIR ]; then
+    rm -rf $DOCKER_DATA_DIR
+    ln -s $MOUNT_DIR/$DOCKER_DATA_DIR $DOCKER_DATA_DIR
+  else
+    echo "$DOCKER_DATA_DIR already linked to $MOUNT_DIR/$DOCKER_DATA_DIRr"
+  fi
   systemctl start docker.service
+}
+
+function download_containers {
+  mount_root_disk
   coreos-cloudinit --from-file ~/cloud-config
 }
 
