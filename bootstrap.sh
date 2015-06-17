@@ -81,21 +81,27 @@ function mount_root_disk {
     echo "Mounting CoreOS root partition to the $MOUNT_DIR"
     mount $CORE_OS_PARTITION $MOUNT_DIR
   fi
-  systemctl stop docker.service
+
   if [ ! -L $DOCKER_DATA_DIR ]; then
+    systemctl stop docker.service
     # Removing existning docker's data directory(on the LiveCD filesystem) and linking it to the CoreOS filesystem docker's data directory
     rm -rf $DOCKER_DATA_DIR
     ln -s $MOUNT_DIR/$DOCKER_DATA_DIR $DOCKER_DATA_DIR
+    systemctl start docker.service
   else
     echo "$DOCKER_DATA_DIR already linked to $MOUNT_DIR/$DOCKER_DATA_DIRr"
   fi
-  systemctl start docker.service
 }
 
 #### Running cloud-config file, to download containers
 function download_containers {
   mount_root_disk
-  coreos-cloudinit --from-file ~/cloud-config
+  clear
+  echo "======================================="
+  echo "Please Log In into your Quay.io account"
+  echo "======================================="
+  docker login quay.io
+  sed "s/ExecStartPre=/ /" ~/cloud-config | grep pull | bash
 }
 
 check_if_root

@@ -1,0 +1,108 @@
+#cloud-config
+write_files:
+###################### This section is responsible for proxy configuration ###########
+  - path: /etc/environment
+    owner: root:root
+    permissions: 0644
+    content: |
+      HTTP_PROXY=http://10.128.225.206:8080
+      http_proxy=http://10.128.225.206:8080
+      no_proxy=localhost,127.0.0.0/8,::1,/var/run/docker.sock
+  - path: /etc/systemd/system/docker.service.d/environment.conf
+    owner: root:root
+    permissions: 0644
+    content: |
+      [Service]
+      EnvironmentFile=/etc/environment
+######################################################################################
+# login into quay.io
+  # - path: /home/core/.dockercfg
+  #   owner: core:core
+  #   permissions: 0644
+  #   content: |
+  #     {
+  #     	"quay.io": {
+  #     		"auth": "<authentification_token>",
+  #     		"email": "<email>"
+  #     	}
+  #     }
+
+hostname: client_id
+users:
+  - name: adminaccount
+    passwd: $1$SomeSalt$Z9QuePNLbNlzqmmibd4Ek1
+    groups:
+      - sudo
+      - docker
+coreos:
+  etcd:
+    name: client_id
+    discovery: https://discovery.etcd.io/968fe6b6426a72778b99d96b17185e34
+    addr: $public_ipv4:4001
+    peer-addr: $public_ipv4:7001
+
+  fleet:
+    metadata: name=<%= vm_name %>
+    public-ip: $public_ipv4
+  units:
+################ Network configurations ###########################
+    - name: 00-eno1.network
+      runtime: true
+      content: |
+        [Match]
+        Name=eno1
+
+        [Network]
+        DNS=192.162.2.3
+        Address=10.128.225.225/24
+        Gateway=10.128.225.1
+###################################################################
+    - name: etcd.service
+      command: start
+    - name: fleet.service
+      command: start
+    - name: docker-tcp.socket
+      command: start
+      enable: true
+      content: |
+        [Unit]
+        Description=Docker Socket for the API
+        [Socket]
+        ListenStream=4243
+        Service=docker.service
+        BindIPv6Only=both
+        [Install]
+        WantedBy=sockets.target
+    - name: nginx.service
+      command: start
+      content: |
+        [Unit]
+        Description=Docker community nginx container
+        Author=Me
+        After=docker.service
+
+        [Service]
+        EnvironmentFile=/etc/environment
+        Restart=always
+        ExecStartPre=-/usr/bin/docker kill nginx
+        ExecStartPre=-/usr/bin/docker rm -f nginx
+        ExecStartPre=/usr/bin/docker pull nginx:latest
+        ExecStart=/usr/bin/docker run --name nginx --env HTTP_PROXY --env http_proxy --volume=/tmp:/usr/share/nginx/html:ro --publish=80:80 nginx:latest
+        ExecStop=/usr/bin/docker stop nginx
+
+    - name: cadvisor.service
+      command: start
+      content: |
+        [Unit]
+        Description=cAdvisor Service
+        After=docker.service
+        Requires=docker.service
+
+        [Service]
+        EnvironmentFile=/etc/environment
+        Restart=always
+        ExecStartPre=-/usr/bin/docker kill cadvisor
+        ExecStartPre=-/usr/bin/docker rm -f cadvisor
+        ExecStartPre=/usr/bin/docker pull google/cadvisor
+        ExecStart=/usr/bin/docker run --name cadvisor --env HTTP_PROXY --env http_proxy --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=4194:4194 google/cadvisor --logtostderr --port=4194
+        ExecStop=/usr/bin/docker stop -t 2 cadvisor
