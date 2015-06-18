@@ -10,6 +10,8 @@
 DOCKER_DATA_DIR=/var/lib/docker        ######## Directory whhere docker store containers
 MOUNT_DIR=~/rootfs                     ######## Directory to mount CoreOS file system
 CORE_OS_PARTITION=/dev/sda9            ######## Partition with CoreOS file system
+CLOUD_INIT_REPOSITORY=https://s3-us-west-2.amazonaws.com/cloud-config-test-bucket
+DOCKER_PRIVARE_REPOSITORY=quay.io
 
 function check_if_root {
   if [[ $EUID -ne 0 ]]; then
@@ -61,8 +63,8 @@ function check_CLIENT_ID {
 
 ###### Download cloud-config file from repository(now there is testing S3)
 function get_cloud_init {
-  CLOUD_INIT_URL=https://s3-us-west-2.amazonaws.com/cloud-config-test-bucket/cloud-config-$CLIENT_ID
-  wget $CLOUD_INIT_URL -O ~/cloud-config
+  CLOUD_INIT_URL=cloud-config-$CLIENT_ID
+  wget $CLOUD_INIT_REPOSITORY/$CLOUD_INIT_URL -O ~/cloud-config
   #### Setting hostname "core-$CLIENT-ID"
   sed -i "s/client_id/core-$CLIENT_ID/" ~/cloud-config
 }
@@ -96,12 +98,16 @@ function mount_root_disk {
 #### Running cloud-config file, to download containers
 function download_containers {
   mount_root_disk
-  clear
+  if [ "$(pidof docker)" ]; then
+    clear
+  else
+    systemctl start docker.service
+  fi
   echo "======================================="
   echo "Please Log In into your Quay.io account"
   echo "======================================="
-  docker login quay.io
-  sed "s/ExecStartPre=/ /" ~/cloud-config | grep pull | bash
+  docker login $DOCKER_PRIVARE_REPOSITORY
+  sed "s/ExecStartPre=/ /" /root/cloud-config | grep pull | bash
 }
 
 check_if_root
