@@ -29,7 +29,7 @@ To use your own cloud-config files replace ```CLOUD_INIT_REPOSITORY``` variable.
 
 ## USE EXAMPLE ##
 ```
-sudo mount /dev/sr0 /mnt
+sudo mount /dev/sr0 /mnt                    #### Installing on VirtualBox
 sudo bash /mnt/bootstrap.sh proxy-DHCP      #### cloud-config-proxy-DHCP from templates directory
 ##### aking for input to login in quay.io
 username
