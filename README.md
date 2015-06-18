@@ -41,7 +41,7 @@ sudo reboot
 
 This script will do next things:
 * Install CoreOS
-* Add downloaded in the /var/lib/coreos-install directory, so it will be executed after reboot
+* Add downloaded cloud-config file in the */var/lib/coreos-install* directory, so it will be executed after reboot
 * LogIn into quay.io account
 * Create user **adminaccount** with **qwer1234** password and SUDO access
 * Configure such proxy address: http_proxy=http://10.128.225.206:8080
