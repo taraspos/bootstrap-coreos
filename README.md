@@ -64,6 +64,7 @@ To create bootable flesh-drive we need to accomplish next steps:
 * run unetbootin-windows-608.exe
 
 ![unetbootin.png](http://img.ctrlv.in/img/15/06/19/55841d9dbd2a6.jpg)
+
 1. Choose downloaded *coreos_bootstrap.iso*
 2. Choose your flesh drive and press **OK**
 
