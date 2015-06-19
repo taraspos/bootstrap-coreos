@@ -1,3 +1,5 @@
+[HOW-TO Create Bootable flesh Drive on WIndows](https://github.com/Trane9991/bootstrap-coreos/wiki/HOW-TO-Create-Bootable-flesh-Drive-on-WIndows)
+
 ## HOW-TO Use bootstarp.sh script ##
 To use this script you need to inject it into CoreOS installation ISO(**isomaster** tool on Ubuntu) and write it to the flesh drive(**unetbootin**) or use customized ISO as virtual CD in the VirtualBox or VMware
 
@@ -54,26 +56,3 @@ This script will do next things:
 ## Templates ##
 * *cloud-config-proxy-DHCP, cloud-config-proxy-static and cloud-config-moproxy-static* require to set proper **network interface**, **ip address**, **default gateway** , **proxy_url**
 * Login step is just example, all docker containers pulling from public repositories
-
-
-## HOW-TO Create bootable flesh drive on Windows ##
-To create bootable flesh-drive we need to accomplish next steps:
-* download latest version of [unetbootin tool for windows](http://sourceforge.net/projects/unetbootin/files/UNetbootin/608/unetbootin-windows-608.exe)
-* download [coreos_bootstrap.iso](https://s3-us-west-2.amazonaws.com/coreos-bootstrap/coreos_bootstrap.iso)
-* insert flesh-drive in the USB port
-* run unetbootin-windows-608.exe
-
-![unetbootin.png](http://img.ctrlv.in/img/15/06/19/55841d9dbd2a6.jpg)
-
-1. Choose downloaded *coreos_bootstrap.iso*
-2. Choose your flesh drive and press **OK**
-
-* Wait untill process is done
-
-![burning.png](http://img.ctrlv.in/img/15/06/19/55841e77705b0.jpg)
-
-* Press **Exit** and pull out flesh drive
-
-![burning.png](http://img.ctrlv.in/img/15/06/19/55841e99c272f.jpg)
-
-* Your boobtable flesh drive is ready!!
