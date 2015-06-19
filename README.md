@@ -42,7 +42,7 @@ sudo reboot
 This script will do next things:
 * Install CoreOS
 * Add downloaded cloud-config file in the */var/lib/coreos-install* directory, so it will be executed after reboot
-* LogIn into quay.io account
+* LogIn into quay.io account  (just example of login, in the cloud-config templates all docker containers pulling from public repositories)
 * Set hostname equal *core-CLIENT_ID*
 * Create user **adminaccount** with **qwer1234** password and SUDO access
 * Configure such proxy address: http_proxy=http://10.128.225.206:8080
@@ -50,3 +50,8 @@ This script will do next things:
 * Pull all containers specified in the cloud-config file(*nginx* and *cAdvisor* in this case) so they will be available after reboot
 
 **NOTE:** username, password, proxy, networking, containers - all this values are in the cloud-config file and can be changed in case of need
+
+
+## Templates ##
+* *cloud-config-proxy-DHCP, cloud-config-proxy-static and cloud-config-moproxy-static* require to set proper **network interface**, **ip address**, **default gateway** , **proxy_url**
+* Login step is just example, all docker containers pulling from public repositories

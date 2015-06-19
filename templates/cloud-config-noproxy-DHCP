@@ -49,7 +49,7 @@ coreos:
       runtime: true
       content: |
         [Match]
-        Name=eth0
+        Name=e*
 
         [Network]
         DHCP=yes
