@@ -1,4 +1,6 @@
-[HOW-TO Create Bootable flesh Drive on WIndows](https://github.com/Trane9991/bootstrap-coreos/wiki/HOW-TO-Create-Bootable-flesh-Drive-on-WIndows)
+## [HOW-TO Create Bootable flesh Drive on Windows](https://github.com/Trane9991/bootstrap-coreos/wiki/HOW-TO-Create-Bootable-flesh-Drive-on-WIndows) ##
+
+## [HOW-TO VirtualBox CoreOS VM](https://github.com/Trane9991/bootstrap-coreos/wiki/VirtualBox-create-CoreOS-VM) ##
 
 ## HOW-TO Use bootstarp.sh script ##
 To use this script you need to inject it into CoreOS installation ISO(**isomaster** tool on Ubuntu) and write it to the flesh drive(**unetbootin**) or use customized ISO as virtual CD in the VirtualBox or VMware
