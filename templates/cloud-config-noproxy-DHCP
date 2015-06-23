@@ -103,3 +103,20 @@ coreos:
         ExecStartPre=/usr/bin/docker pull google/cadvisor
         ExecStart=/usr/bin/docker run --name cadvisor --env HTTP_PROXY --env http_proxy --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=4194:4194 google/cadvisor --logtostderr --port=4194
         ExecStop=/usr/bin/docker stop -t 2 cadvisor
+
+      - name: api.service
+        command: start
+        content: |
+          [Unit]
+          Description=api Service
+          After=docker.service
+          Requires=docker.service
+
+          [Service]
+          EnvironmentFile=/etc/environment
+          Restart=always
+          ExecStartPre=-/usr/bin/docker kill api
+          ExecStartPre=-/usr/bin/docker rm -f api
+          ExecStartPre=/usr/bin/docker pull  quay.io/imaginelearning/test_api_container
+          ExecStart=/usr/bin/docker run --name api --env GUID --volume=/tmp/test:/tmp:rw  quay.io/imaginelearning/test_api_container
+          ExecStop=/usr/bin/docker stop -t 2 api
