@@ -27,6 +27,10 @@ To use your own cloud-config files replace ```CLOUD_INIT_REPOSITORY``` variable.
 * During script runtime you will be asked for Login into your QUAY.io account. To change Docker private repository supplier change ```DOCKER_PRIVARE_REPOSITORY``` value
 **NOTE**: sometime during login step CoreOS can prompt some unexpected output, just ignore it and keep typing username.
 
+* Pull out Flesh Drive or Virtual CD (in case of VirtualBox VM):
+
+ ![virtual_cd](http://img.ctrlv.in/img/15/06/23/55898d58a8a70.jpg)
+
 * Reboot when everything is done and login with credentials which are specified in choosen cloud-config file
 
 
