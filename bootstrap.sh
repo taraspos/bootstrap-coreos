@@ -10,7 +10,7 @@
 DOCKER_DATA_DIR=/var/lib/docker        ######## Directory whhere docker store containers
 MOUNT_DIR=~/rootfs                     ######## Directory to mount CoreOS file system
 CORE_OS_PARTITION=/dev/sda9            ######## Partition with CoreOS file system
-CLOUD_INIT_REPOSITORY=https://raw.githubusercontent.com/Trane9991/bootstrap-coreos/master/templates
+CLOUD_INIT_REPOSITORY=https://raw.githubusercontent.com/Trane9991/bootstrap-coreos/devel/templates
 DOCKER_PRIVARE_REPOSITORY=quay.io
 
 function check_if_root {
