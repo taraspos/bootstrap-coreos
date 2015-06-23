@@ -8,6 +8,7 @@ write_files:
       HTTP_PROXY=""
       http_proxy=""
       no_proxy=""
+      GUID="guid_value"
   - path: /etc/systemd/system/docker.service.d/environment.conf
     owner: root:root
     permissions: 0644

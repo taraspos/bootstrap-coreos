@@ -69,6 +69,12 @@ function get_cloud_init {
   sed -i "s/client_id/core-$CLIENT_ID/" ~/cloud-config
 }
 
+### Generating GUID and inserting into cloud_init file
+function generate_GUID {
+  GUID=$(openssl rand -hex 16)
+  sed -i "s/guid_value/$GUID/" ~/cloud-config
+}
+
 ##### Installing CoreOS with downloaded cloud-config file
 function  install_coreos {
   coreos-install -d /dev/sda -C stable -c ~/cloud-config
@@ -114,5 +120,6 @@ check_if_root
 check_CLIENT_ID $1
 #check_cloud_init_path
 get_cloud_init
+generate_GUID
 install_coreos
 download_containers
