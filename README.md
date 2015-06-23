@@ -60,5 +60,5 @@ This script will do next things:
 
 
 ## Templates ##
-* *cloud-config-proxy-DHCP, cloud-config-proxy-static and cloud-config-moproxy-static* require to set proper **network interface**, **ip address**, **default gateway** , **proxy_url**
+* *cloud-config-proxy-DHCP, cloud-config-proxy-static and cloud-config-noproxy-static* require to set proper **network interface**, **ip address**, **default gateway** , **proxy_url**
 * Login step is just example, all docker containers pulling from public repositories
